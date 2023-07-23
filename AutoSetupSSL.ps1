@@ -41,19 +41,19 @@
     Debug parameter: If set, installation logs will be shown; otherwise, the script will run silently.
 
 .EXAMPLE
-    PS> .\AutoInstall.ps1
+    PS> .\AutoSetupSSL.ps1
     This example uses the default settings from Include/Settings.ps1 and Conf/Conf.ps1 as parameter values.
 
 .EXAMPLE
-    PS> .\AutoInstall.ps1 -hostname "domainaddress"
+    PS> .\AutoSetupSSL.ps1 -hostname "domainaddress"
     This example uses the default settings from Include/Settings.ps1 as permanent values and generates an auto PFX path with the structure C:\SSL\domainaddress_pfxpass.pfx. The password of the PFX file is obtained after the first '_' character from the PFX file. The script uses the IMAP, POP3, and SMTP ports from the current binding ports of SmarterMail if they exist or generates random ports if they do not exist. If the ports are defined in Conf/Conf.ps1 as $smtpPort, $imapPort, $popPort values, it uses those values instead.
 
 .EXAMPLE
-    PS> .\AutoInstall.ps1 -hostname "domainaddress" -pfxPath "/location/of/pfx/file" -pfxPass "pfxpassword"
+    PS> .\AutoSetupSSL.ps1 -hostname "domainaddress" -pfxPath "/location/of/pfx/file" -pfxPass "pfxpassword"
     This example sets the PFX path and password directly as input parameters. The script uses the IMAP, POP3, and SMTP ports from the current binding ports of SmarterMail if they exist or generates random ports if they do not exist. If the ports are defined in Conf/Conf.ps1 as $smtpPort, $imapPort, $popPort values, it uses those values instead.
 
 .EXAMPLE
-    PS> .\AutoInstall.ps1 -hostname "domainaddress" -pfxPath "/location/of/pfx/file" -pfxPass "pfxpassword" -smtp "465" -imap "993" -pop "995" -iisIp "*" -smtpOutboundIp "192.168.1.1"
+    PS> .\AutoSetupSSL.ps1 -hostname "domainaddress" -pfxPath "/location/of/pfx/file" -pfxPass "pfxpassword" -smtp "465" -imap "993" -pop "995" -iisIp "*" -smtpOutboundIp "192.168.1.1"
     This example defines all parameters explicitly. Each parameter can be defined in Conf/Conf.ps1, Include/Settings.ps1, or as input parameters from the command line.
 
 .NOTES
@@ -79,17 +79,24 @@ param (
 # Script code goes here...
 
 
-. "C:\scripts\AutoInstallSSL\Includes\autoload.ps1" 
+. ".\Includes\autoload.ps1" 
 checkRunningState
 
 if ($Debug){
+    Write-Log -DebugType "Info" -Message "############# Script Runtime Start."
+
+    $messageForIisProccess="+++++++++++++ Install  for IIS Website: $website | IIS Bind IP: $iisIPaddress | Domain: $domain | IIS Bind Port: $iisPort | PFX password: $password | mail outbound ip: $mailOutputIp"
+    $messageForStartSmartermailProcess="+++++++++++++ Start Smartermail communication"
+    Write-Log -DebugType "Info" -Message $messageForIisProccess
+
     $confirmation = Read-Host "Please confirm(Y/N)"
+
     if ($confirmation -eq "Y" -or $confirmation -eq "y") {      
-        AutoInstallSSL
+      AutoSetupSSL
     }else {
         Write-Log -DebugType "Info" -Message "Script Stopped, User Does not Confirmed"
         exit
     }
 }else{
-    AutoInstallSSL
+  AutoSetupSSL
 }

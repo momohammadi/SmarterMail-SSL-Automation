@@ -63,7 +63,7 @@ function checkRunningState {
         New-Item -ItemType File -Path $filePath | Out-Null
         Exit
     }elseif($forceStop){
-        Write-Log -DebugType "Error" -Message "force stoped check log file"
+        Write-Log -DebugType "Error" -forceStop:$false -Message "force stoped check log file"
         Exit
     }
 }
@@ -97,14 +97,7 @@ function extractXml {
 }
 
 # Run Script
-function AutoInstallSSL {
-	if($Debug){
-		Write-Log -DebugType "Info" -Message "############# Script Runtime Start."
-		$messageForIisProccess="+++++++++++++ Install  for IIS Website: $website | IIS Bind IP: $iisIPaddress | Domain: $domain | IIS Bind Port: $iisPort"
-		$messageForStartSmartermailProcess="+++++++++++++ Start Smartermail communication"
-		Write-Log -DebugType "Info" -Message $messageForIisProccess		
-	}
-	
+function AutoSetupSSL {
     $certThumbPrint, $certStorePath = installPfx -certPath $certPath -certPassword $password
     setupBinding -bindingInfo $bindingObject -certThumbPrint $certThumbPrint -certStorePath $certStorePath
     #add smartermail binding        
@@ -143,5 +136,5 @@ function addFirewallRule(){
             Write-Log -DebugType "Error" -Message "Error On adding Firewall rule with message $errormessage"
         }
     }
-    Write-Log -DebugType "Error" -Message "End Firewall rule adding for Port $port"
+    Write-Log -DebugType "Info" -Message "End Firewall rule adding for Port $port"
 }
