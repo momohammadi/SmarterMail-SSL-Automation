@@ -1,0 +1,6 @@
+. "C:\scripts\AutoInstallSSL\Includes\Modules.ps1"
+. "C:\scripts\AutoInstallSSL\Config\Conf.ps1"
+. "C:\scripts\AutoInstallSSL\Includes\Settings.ps1"
+. "C:\scripts\AutoInstallSSL\Includes\General.ps1"
+. "C:\scripts\AutoInstallSSL\Includes\IIS.ps1"
+. "C:\scripts\AutoInstallSSL\Includes\Smartermail.ps1"
