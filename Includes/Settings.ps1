@@ -4,7 +4,7 @@ $apiUser        = "apiuser"
 #password for use Smartermail API Connection
 $apiPass        = 'apipass'
 #self location of script
-$workingDir     = "C:\scripts\AutoInstallSSL"
+$workingDir     = "C:\scripts\SmarterMail-SSL-Automation"
 #pfx files directory
 $pfxLocation    = "C:\SSL"
 #IIS Binding Port for users hostname

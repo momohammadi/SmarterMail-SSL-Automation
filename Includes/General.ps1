@@ -48,7 +48,7 @@ function saveOutput (){
 	}
 }
 
-# Check if the disable file exists; stop and exit the script if found. Create the file when runtime finishes.
+#Function to check the running state of the script and perform necessary actions based on parameters. If the disable file exists, the script exits immediately. It logs script completion and creates the disable file if $finish is true. If $forceStop is true, it logs an error and exits the script. The function also validates and creates required directories for the script to work correctly.
 function checkRunningState {
     param(
         [bool]$finish = $false,
@@ -56,7 +56,8 @@ function checkRunningState {
     )
     $filePath="$workingDir/disable.lock"
 
-    if(Test-Path $filePath){        
+    if(Test-Path $filePath){
+        Write-Log -DebugType "Error" -forceStop:$false -Message "The $workingDir/disable.lock file exists. Please ensure the configuration is correct, remove this   file, and try running again."
         Exit
     }elseif($finish){
         Write-Log -DebugType "Info" -Message "Script runtime ended."
@@ -65,9 +66,26 @@ function checkRunningState {
     }elseif($forceStop){
         Write-Log -DebugType "Error" -forceStop:$false -Message "force stoped check log file"
         Exit
+    }else{
+      if($workingDir -and ! Test-Path $workingDir){
+        New-Item -ItemType Directory -Path $workingDir
+      }elseif(!$workingDir){
+        Write-Log -DebugType "Error" -forceStop:$false -Message "You Should first define workingDir on Settings.ps1 file"
+        Exit
+      }
+
+      if(! Test-Path "$workingDir\Logs\"){
+        New-Item -ItemType Directory -Path "$workingDir\Logs"
+      }
+
+      if(! Test-Path "$workingDir\Info\"){
+        New-Item -ItemType Directory -Path "$workingDir\Info"
+      }
+
     }
 }
 
+#search and select xml values
 function extractXml {
     param (
         [xml]$xmlContent,
@@ -115,6 +133,7 @@ function AutoSetupSSL {
     checkRunningstate -finish:$true
 }
 
+#add firewall rules
 function addFirewallRule(){
     param(
         [String]$port,
