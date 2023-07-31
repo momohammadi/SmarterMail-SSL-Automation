@@ -67,18 +67,18 @@ function checkRunningState {
         Write-Log -DebugType "Error" -forceStop:$false -Message "force stoped check log file"
         Exit
     }else{
-      if($workingDir -and ! Test-Path $workingDir){
+      if($workingDir -and !(Test-Path $workingDir)){
         New-Item -ItemType Directory -Path $workingDir
       }elseif(!$workingDir){
         Write-Log -DebugType "Error" -forceStop:$false -Message "You Should first define workingDir on Settings.ps1 file"
         Exit
       }
 
-      if(! Test-Path "$workingDir\Logs\"){
+      if(!(Test-Path "$workingDir\Logs\")){
         New-Item -ItemType Directory -Path "$workingDir\Logs"
       }
 
-      if(! Test-Path "$workingDir\Info\"){
+      if(!(Test-Path "$workingDir\Info\")){
         New-Item -ItemType Directory -Path "$workingDir\Info"
       }
 
